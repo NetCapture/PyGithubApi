@@ -175,16 +175,35 @@ def delete_file(_owner, _repo, _path=""
     return result
 
 
+def get_content(_owner, _repo, _path="", _token=os.getenv('GITHUB_TOKEN', "")):
+    # check path, the data which not startwith "/", will append "/" add the header
+    _path = preparePath(_path, make_prefix="/")
+    info = getSha(_owner, _repo, _path, _token)
+    sha_json = json.loads(info)
+    # suport base64
+    ct = sha_json['content']
+    eds = sha_json['encoding']
+    if "base64" == eds:
+        res = str(base64.b64decode(ct.encode("utf-8")), "utf-8")
+        return res
+    return ct
+
+
 if __name__ == '__main__':
     # test create
-    tes: str = "hello"
-    uPs: str = "python更新内容1"
+    # tes: str = "hello"
+    # uPs: str = "python更新内容1"
     # base64Text()
     # testReadFile()
     # testCreateFiles(_content_not_base64)
     # testGetSha()
     # testUpdateContent(uPs)
     # testDeleteFileTest()
+
+    # get info
+    # https://github.com/parserpp/ip_ports/blob/main/proxyinfo.txt
+    tss = get_content("parserpp", "ip_ports", "/proxyinfo.txt")
+    # print(tss)
 
 #
 # def testDeleteFileTest():
