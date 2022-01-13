@@ -4,6 +4,9 @@ import json
 import os
 
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 _VERSION = "v1.0.0"
 _NAME = "sanbo"
@@ -68,7 +71,7 @@ def getSha(_owner, _repo, _path=""
     _path = preparePath(_path, make_prefix="/")
     sha_url = "https://api.github.com/repos/{}/{}/contents{}".format(_owner, _repo, _path)
     _headers = getGithubRequestHeader(__token)
-    resp = requests.request("get", url=sha_url, headers=_headers)
+    resp = requests.request("get", url=sha_url, headers=_headers, verify=False)
     rsult = resp.text
     if isDebug:
         print("getSha url: " + sha_url)
@@ -100,7 +103,7 @@ def create_file(_owner, _repo, _path=""
     #     content_final, _commit_msg, _name, _email)
     _data = "{\"content\":\"" + content_final + "\",\"message\":\"" + _commit_msg + "\" ,\"committer\":{ \"name\":\"" + _name + "\",\"email\":\"" + _email + "\" }}"
     _headers = getGithubRequestHeader(_token)
-    resp = requests.request(method="put", url=create_url, data=_data, headers=_headers)
+    resp = requests.request(method="put", url=create_url, data=_data, headers=_headers, verify=False)
     result = resp.text
     if isDebug:
         print("create_file url:" + create_url)
@@ -137,7 +140,7 @@ def update_content(_owner, _repo, _path=""
     _data = "{\"content\":\"" + content_final + "\",\"message\":\"" + _commit_msg + "\" ,\"sha\":\"" + sha + "\" ,\"committer\":{ \"name\":\"" + _name + "\",\"email\":\"" + _email + "\" }}"
     # _data = "{\"content\":\"" + content_final + "\",\"message\":\"" + _commit_msg + "\", \"sha\":\"" + sha + "\" }"
     _headers = getGithubRequestHeader(_token)
-    resp = requests.request(method="put", url=update_url, data=_data, headers=_headers)
+    resp = requests.request(method="put", url=update_url, data=_data, headers=_headers, verify=False)
     result = resp.text
     if isDebug:
         print("update_content url:" + update_url)
@@ -164,7 +167,7 @@ def delete_file(_owner, _repo, _path=""
     _data = "{\"message\":\"" + _commit_msg + "\" ,\"sha\":\"" + sha + "\" ,\"committer\":{ \"name\":\"" + _name + "\",\"email\":\"" + _email + "\" }}"
     # _data = "{\"message\":\""+_commit_msg+"\", \"sha\":\""+sha+"\" }"
     _headers = getGithubRequestHeader(_token)
-    resp = requests.request(method="delete", url=update_url, data=_data, headers=_headers)
+    resp = requests.request(method="delete", url=update_url, data=_data, headers=_headers, verify=False)
     result = resp.text
     if isDebug:
         print("delete_file url:" + update_url)
@@ -202,8 +205,9 @@ if __name__ == '__main__':
 
     # get info
     # https://github.com/parserpp/ip_ports/blob/main/proxyinfo.txt
-    tss = get_content("parserpp", "ip_ports", "/proxyinfo.txt")
+    #tss = get_content("parserpp", "ip_ports", "/proxyinfo.txt")
     # print(tss)
+    print(os.getenv('GITHUB_TOKEN', ""))
 
 #
 # def testDeleteFileTest():
