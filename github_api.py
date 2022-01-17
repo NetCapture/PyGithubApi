@@ -2,17 +2,26 @@
 import base64
 import json
 import os
-
+import sys
+import requests
+import urllib3
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-
+urllib3.disable_warnings()
+requests.packages.urllib3.disable_warnings()
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+# sys.path.append('../')
+# ssl._create_default_https_context = ssl._create_unverified_context
 
+"""
+https://github.com/NetCapture/PyGithubApi
+
+"""
 _VERSION = "v1.0.0"
 _NAME = "sanbo"
 _EMAIL = "sanbo.xyz@gmail.com"
 _COMMIT_MSG = "commit by python api[{}].".format(_VERSION)
-isDebug = True
+isDebug = False
 
 
 # support full path: README.md、/Users/root/Desktop/test.txt, and so on
@@ -182,7 +191,11 @@ def get_content(_owner, _repo, _path="", _token=os.getenv('GITHUB_TOKEN', "")):
     # check path, the data which not startwith "/", will append "/" add the header
     _path = preparePath(_path, make_prefix="/")
     info = getSha(_owner, _repo, _path, _token)
+    if isDebug:
+        print("get_content sha info:"+info)
     sha_json = json.loads(info)
+    if isDebug:
+        print(sha_json)
     # suport base64
     ct = sha_json['content']
     eds = sha_json['encoding']
@@ -205,9 +218,11 @@ if __name__ == '__main__':
 
     # get info
     # https://github.com/parserpp/ip_ports/blob/main/proxyinfo.txt
-    #tss = get_content("parserpp", "ip_ports", "/proxyinfo.txt")
-    # print(tss)
-    print(os.getenv('GITHUB_TOKEN', ""))
+    tss = get_content("parserpp", "ip_ports", "/proxyinfo.txt")
+    print(tss)
+    # sas = getSha("parserpp", "ip_ports", "/proxyinfo.txt")
+    # print(sas)
+
 
 #
 # def testDeleteFileTest():
