@@ -21,7 +21,7 @@ _VERSION = "v1.0.0"
 _NAME = "sanbo"
 _EMAIL = "sanbo.xyz@gmail.com"
 _COMMIT_MSG = "commit by python api[{}].".format(_VERSION)
-isDebug = False
+isDebug = True
 
 
 # support full path: README.md、/Users/root/Desktop/test.txt, and so on
